@@ -1,0 +1,63 @@
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    project: sites-availability
+  name: dev-developers-sites-availability
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sites-availability-secret
+  namespace: dev-developers-sites-availability
+type: Opaque
+stringData:
+  BOT_TOKEN: "{{ bot_token }}"
+  CHAT_IDS : "{{ chat_ids }}"
+  HOSTS    : "{{ hosts }}"
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sites-availability-bot
+  namespace: dev-developers-sites-availability
+spec:
+  schedule: "{{ schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: sites-availability-bot
+            image: longmama/sites-availability-bot
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: BOT_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: sites-availability-secret
+                    key : BOT_TOKEN
+              - name: CHAT_IDS
+                valueFrom:
+                  secretKeyRef:
+                    name: sites-availability-secret
+                    key : CHAT_IDS
+              - name: HOSTS
+                valueFrom:
+                  secretKeyRef:
+                    name: sites-availability-secret
+                    key : HOSTS
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "0.2"
+              limits:
+                memory: "1024Mi"
+                cpu: "1"
+          restartPolicy: Never

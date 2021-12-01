@@ -1,0 +1,17 @@
+- name: deploy pre-production
+  hosts: localhost
+
+  vars:
+    bot_token: _
+    chat_ids : _
+    hosts    : _
+    schedule : "* * * * *"
+
+  tasks:
+    - name: generate namespace, secret and cronjob
+      template:
+        src : ./template/kub-sites-availability-bot.j2
+        dest: ./kub-sites-availability-bot.yaml
+
+    - name: run namespace, secret and cronjob
+      shell: kubectl apply -f ./kub-sites-availability-bot.yaml

@@ -1,0 +1,17 @@
+__pycache__
+*.py[cod]
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.env
+.venv
+venv
+env
+.gitignore
+.md
+.git
+.cache
+.DS_Store
+kub-sites-availability_bot.j2
+kub-sites-availability_bot.yaml
+sites-sites-availability_bot.yaml
